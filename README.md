@@ -25,15 +25,17 @@
 
 ## Why
 
-This project chains together several otherwise scattered tasks into one complete pipeline:
+Making slides usually means bouncing between too many disconnected steps: shaping the story, drafting page content, generating visuals, exporting a deck, and then rebuilding everything again if you need a truly editable presentation.
 
-- Automatically generate a PPT outline and page content from requirements
-- Batch-render each slide as an image and export a standard `pptx`
-- Continue from an existing run directory or existing images to produce an editable `pptx`
-- Manage text models, editable models, image models, and MinerU through a unified `YAML` config
-- Support Web UI, CLI, and HTTP API simultaneously
+EditDeck turns that fragmented process into one continuous workflow:
 
-If what you want is "get a visual draft fast, then turn it into an editable presentation," this workflow should feel natural.
+- Start from a plain-language requirement and turn it into a structured PPT outline with page-level content
+- Render every slide into polished visual images and package them into a standard `pptx`
+- Continue from the generated run directory or from existing slide images to rebuild an editable `pptx`
+- Coordinate text models, image models, editable deck generation, and MinerU parsing through one unified `YAML` config
+- Expose the same workflow through Web UI, CLI, and HTTP API so it fits both hands-on usage and system integration
+
+If your ideal workflow is "get the visual draft fast, then keep going until the deck becomes editable and usable," this project is built for exactly that.
 
 <a id="highlights"></a>
 
