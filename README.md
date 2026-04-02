@@ -1,6 +1,6 @@
 # EditDeck
 
-<p align="center">从需求文本到 PPT 图片、普通 PPT、可编辑 PPT 的一体化生成流水线。</p>
+<p align="center">An end-to-end pipeline from requirement text to slide images, standard PPTX, and editable PPTX.</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-FastAPI-blue?style=flat-square" alt="Python FastAPI" />
@@ -15,7 +15,8 @@
   <a href="#quick-start">Quick Start</a> ·
   <a href="#usage">Usage</a> ·
   <a href="#configuration">Configuration</a> ·
-  <a href="#faq">FAQ</a>
+  <a href="#faq">FAQ</a> ·
+  <a href="./README_CN.md">中文文档</a>
 </p>
 
 ---
@@ -24,25 +25,25 @@
 
 ## Why
 
-这个项目把几件原本分散的事情串成了一条完整链路：
+This project chains together several otherwise scattered tasks into one complete pipeline:
 
-- 根据需求自动生成 PPT 大纲与页面内容
-- 批量生成每一页图片，并导出普通 `pptx`
-- 在已有结果目录或已有图片基础上继续生成可编辑 `pptx`
-- 用统一的 `YAML` 配置管理文本模型、可编辑模型、图片模型和 MinerU
-- 同时支持 Web 页面、CLI 和 HTTP API
+- Automatically generate a PPT outline and page content from requirements
+- Batch-render each slide as an image and export a standard `pptx`
+- Continue from an existing run directory or existing images to produce an editable `pptx`
+- Manage text models, editable models, image models, and MinerU through a unified `YAML` config
+- Support Web UI, CLI, and HTTP API simultaneously
 
-如果你想要的是“先快速出视觉稿，再补成可编辑演示文档”，这套流程会比较顺手。
+If what you want is "get a visual draft fast, then turn it into an editable presentation," this workflow should feel natural.
 
 <a id="highlights"></a>
 
 ## Highlights
 
-- 单配置入口：项目默认只读取 [config/app.yaml](/E:/xinda_agent2206/config/app.yaml)
-- 双工作流支持：既可以从需求直接生成，也可以对已有图片二次生成可编辑 PPT
-- 可编辑链路完整：图片解析、元素抽取、占位匹配、浏览器导出都已经串起来
-- 跨平台更友好：浏览器路径可以留空，运行时会按传入路径、环境变量、系统 `PATH` 自动探测
-- 覆盖方式直接：CLI 参数和 Web/API 请求参数都可以在运行时覆盖配置文件
+- Single config entry point: the project reads only [config/app.yaml](/E:/xinda_agent2206/config/app.yaml) by default
+- Dual workflow support: generate from scratch or re-generate an editable PPT from existing images
+- Complete editable pipeline: image parsing, element extraction, placeholder matching, and browser export are all wired up
+- Better cross-platform support: the browser path can be left empty — at runtime it auto-detects from explicit arguments, environment variables, and the system `PATH`
+- Straightforward overrides: both CLI arguments and Web/API request parameters can override the config file at runtime
 
 ## Workflow
 
@@ -60,38 +61,38 @@ Requirement
 
 ## Quick Start
 
-### 1. 安装依赖
+### 1. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. 修改配置
+### 2. Edit Configuration
 
-编辑 [config/app.yaml](/E:/xinda_agent2206/config/app.yaml)。
+Edit [config/app.yaml](/E:/xinda_agent2206/config/app.yaml).
 
-- 项目模板中的 `api_key` 默认留空
-- `base_url` 可以继续使用当前文件里的地址
-- 更完整的字段说明见 [config/README.md](/E:/xinda_agent2206/config/README.md)
+- The `api_key` fields are left empty by default in the project template
+- You can keep using the `base_url` addresses already in the file
+- See [config/README.md](/E:/xinda_agent2206/config/README.md) for a more complete field reference
 
-### 3. 选择运行方式
+### 3. Choose How to Run
 
-启动 Web 服务：
+Start the web server:
 
 ```bash
 uvicorn webapp.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-浏览器访问：
+Open in your browser:
 
 ```text
 http://127.0.0.1:8000/
 ```
 
-或者直接使用 CLI：
+Or use the CLI directly:
 
 ```bash
-python -m app.cli generate "做一份 AI 办公效率提升方案"
+python -m app.cli generate "Create an AI office productivity improvement plan"
 ```
 
 <a id="usage"></a>
@@ -100,27 +101,27 @@ python -m app.cli generate "做一份 AI 办公效率提升方案"
 
 ### Web
 
-Web 入口由 [webapp/main.py](/E:/xinda_agent2206/webapp/main.py) 提供，适合直接在页面里填写需求、风格和运行参数。
+The web entry point is provided by [webapp/main.py](/E:/xinda_agent2206/webapp/main.py), ideal for filling in requirements, styles, and runtime parameters directly on the page.
 
 ### CLI
 
-只生成图片和普通 PPT：
+Generate images and a standard PPT only:
 
 ```bash
-python -m app.cli generate "做一份 AI 办公效率提升方案" \
+python -m app.cli generate "Create an AI office productivity improvement plan" \
   --slide-count auto \
   --export-mode both
 ```
 
-生成普通 PPT 后继续输出可编辑 PPT：
+Generate a standard PPT and then continue to produce an editable PPT:
 
 ```bash
-python -m app.cli generate "做一份 AI 办公效率提升方案" \
+python -m app.cli generate "Create an AI office productivity improvement plan" \
   --editable-ppt \
   -edit
 ```
 
-基于已有运行目录继续生成可编辑 PPT：
+Continue generating an editable PPT from an existing run directory:
 
 ```bash
 python -m app.cli editable \
@@ -129,7 +130,7 @@ python -m app.cli editable \
   -edit
 ```
 
-基于现有图片直接生成可编辑 PPT：
+Generate an editable PPT directly from existing images:
 
 ```bash
 python -m app.cli editable \
@@ -139,70 +140,70 @@ python -m app.cli editable \
   -edit
 ```
 
-常用参数：
+Common parameters:
 
-- `--config-file`：指定配置文件，默认读取 `config/app.yaml`
-- `--style-description`：用文字指定风格
-- `--style-template`：用图片指定风格
-- `--editable-ppt`：在生成图片后继续生成可编辑 PPT
-- `-edit` / `--edit`：启用当前可用的可编辑资产匹配后端
-- `--mineru-api-key`：按需覆盖 `mineru.api_key`
-- `--force-reextract-assets`：强制重新抽取元素
-- `--disable-asset-reuse`：禁止一个素材复用到多个 `PH`
+- `--config-file`: specify a config file; defaults to `config/app.yaml`
+- `--style-description`: specify style via text
+- `--style-template`: specify style via image
+- `--editable-ppt`: continue generating an editable PPT after image generation
+- `-edit` / `--edit`: enable the currently available editable asset matching backend
+- `--mineru-api-key`: override `mineru.api_key` as needed
+- `--force-reextract-assets`: force re-extraction of elements
+- `--disable-asset-reuse`: prevent a single asset from being reused across multiple placeholders
 
-说明：
+Notes:
 
-- `--style-description` 和 `--style-template` 互斥
-- CLI 传参优先级高于 `YAML` 配置
+- `--style-description` and `--style-template` are mutually exclusive
+- CLI arguments take priority over `YAML` configuration
 
 ## HTTP API
 
-主要接口：
+Main endpoints:
 
-- `GET /api/health`：健康检查
-- `POST /api/generate`：同步生成
-- `POST /api/generate/start`：异步生成
-- `POST /api/editable/start`：基于已有 `run_id` 启动可编辑 PPT 任务
-- `GET /api/generate/status/{job_id}`：查询异步任务状态
+- `GET /api/health`: health check
+- `POST /api/generate`: synchronous generation
+- `POST /api/generate/start`: asynchronous generation
+- `POST /api/editable/start`: start an editable PPT task from an existing `run_id`
+- `GET /api/generate/status/{job_id}`: query async task status
 
-如果希望在生成阶段直接产出可编辑 PPT，请在请求里额外传入：
+To produce an editable PPT directly during the generation phase, include the following in your request:
 
 - `generate_editable_ppt=true`
 - `asset_backend=edit`
 
-当 `config/app.yaml` 里没有可用的 `mineru.api_key` 时，需要通过请求显式传入 `mineru_api_key`。
+When `config/app.yaml` does not have a usable `mineru.api_key`, you need to pass `mineru_api_key` explicitly in the request.
 
 <a id="configuration"></a>
 
 ## Configuration
 
-项目只保留一个主配置文件：
+The project keeps a single main config file:
 
 ```text
 config/app.yaml
 ```
 
-配置块说明：
+Config sections:
 
-- `app`：输出目录和默认页数
-- `models.text`：大纲、文案等文本生成模型
-- `models.editable`：可编辑 PPT 生成链路
-- `models.image`：图片生成模型
-- `mineru`：页面元素解析与资产抽取
+- `app`: output directory and default slide count
+- `models.text`: models for outline and copy generation
+- `models.editable`: the editable PPT generation pipeline
+- `models.image`: image generation model
+- `mineru`: page element parsing and asset extraction
 
-几个实用规则：
+Useful fallback rules:
 
-- `models.image.api_key` 为空时，会回退使用 `models.text.api_key`
-- `models.editable.base_url` 为空时，会回退使用 `models.text.base_url`
-- `models.editable.api_key` 为空时，会回退使用 `models.text.api_key`
-- `mineru.api_key` 为空时，会继续回退尝试 `models.editable.api_key` 和 `models.text.api_key`
-- `models.editable.browser_path` 可以留空，运行时会自动尝试显式传参、环境变量和系统 `PATH`
+- If `models.image.api_key` is empty, it falls back to `models.text.api_key`
+- If `models.editable.base_url` is empty, it falls back to `models.text.base_url`
+- If `models.editable.api_key` is empty, it falls back to `models.text.api_key`
+- If `mineru.api_key` is empty, it further falls back to `models.editable.api_key` and then `models.text.api_key`
+- `models.editable.browser_path` can be left empty — at runtime it tries explicit arguments, environment variables, and the system `PATH`
 
-完整示例和字段参考见 [config/README.md](/E:/xinda_agent2206/config/README.md)。
+For a complete example and field reference, see [config/README.md](/E:/xinda_agent2206/config/README.md).
 
 ## Output
 
-每次运行会在 `generated/<run_id>/` 下写出结果。常见目录结构如下：
+Each run writes results under `generated/<run_id>/`. A typical directory structure:
 
 ```text
 generated/<run_id>/
@@ -217,7 +218,7 @@ generated/<run_id>/
 └─ logs/
 ```
 
-可编辑链路通常还会留下这些中间结果，方便排查问题：
+The editable pipeline also leaves behind these intermediate artifacts for debugging:
 
 - `edit_assets/`
 - `attempt_01/`
@@ -242,7 +243,7 @@ generated/<run_id>/
 └─ requirements.txt
 ```
 
-核心文件：
+Core files:
 
 - [app/cli.py](/E:/xinda_agent2206/app/cli.py)
 - [app/pipeline.py](/E:/xinda_agent2206/app/pipeline.py)
@@ -255,31 +256,31 @@ generated/<run_id>/
 
 ## FAQ
 
-### 可编辑 PPT 提示缺少 key
+### Editable PPT reports a missing key
 
-优先检查：
+Check the following in order:
 
-- [config/app.yaml](/E:/xinda_agent2206/config/app.yaml) 里的 `mineru.api_key`
-- CLI 参数里的 `--mineru-api-key`
-- Web / API 请求里的 `mineru_api_key`
+- `mineru.api_key` in [config/app.yaml](/E:/xinda_agent2206/config/app.yaml)
+- `--mineru-api-key` in CLI arguments
+- `mineru_api_key` in Web / API requests
 
-### 浏览器执行失败或下载失败
+### Browser execution or download fails
 
-可以按这个顺序排查：
+Troubleshoot in this order:
 
-- 先让 `models.editable.browser_path` 保持空值
-- 如果需要显式指定浏览器，再传 `--editable-browser-path`
-- 或者配置 `EDITABLE_PPT_BROWSER_PATH`、`CHROME_PATH`、`GOOGLE_CHROME_BIN`、`CHROMIUM_PATH`、`BROWSER_PATH`
-- 如果系统里没有可用浏览器，执行 `playwright install chromium`
+- First, leave `models.editable.browser_path` empty
+- If you need to specify a browser explicitly, pass `--editable-browser-path`
+- Or set one of these environment variables: `EDITABLE_PPT_BROWSER_PATH`, `CHROME_PATH`, `GOOGLE_CHROME_BIN`, `CHROMIUM_PATH`, `BROWSER_PATH`
+- If no browser is available on the system, run `playwright install chromium`
 
-### 占位替换效果不理想
+### Placeholder replacement looks off
 
-可以尝试：
+Try:
 
-- 提高 `mineru.max_refine_depth`
-- 开启 `--force-reextract-assets`
-- 开启 `--disable-asset-reuse`
+- Increase `mineru.max_refine_depth`
+- Enable `--force-reextract-assets`
+- Enable `--disable-asset-reuse`
 
-### 只想复用已有素材
+### Just want to reuse existing assets
 
-可以使用 `--assets-json`，但当前更适合单图片模式下直接指定已有 `assets.json`。
+Use `--assets-json`, though this is currently best suited for directly specifying an existing `assets.json` in single-image mode.
