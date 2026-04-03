@@ -198,6 +198,15 @@ python -m app.cli generate "做一份 AI 办公效率提升方案" \
   --export-mode both
 ```
 
+补充参考文件（支持pdf，docx，txt，md等）和需求，生成PPT：
+
+```bash
+python -m app.cli generate "基于我的文档中的国内外研究现状，做一份现状分析ppt" \
+  --slide-count auto \
+  --export-mode both \
+  --source-file data.docx 
+```
+
 带风格和参考文件一起生成：
 
 ```bash

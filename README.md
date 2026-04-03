@@ -199,6 +199,15 @@ python -m app.cli generate "Create an AI office productivity improvement plan" \
   --export-mode both
 ```
 
+Generate a PPT with requirements and supplementary reference documents (supports pdf, docx, txt, md, etc.):
+
+```bash
+python -m app.cli generate "基于我的文档中的国内外研究现状，做一份现状分析ppt" \
+  --slide-count auto \
+  --export-mode both \
+  --source-file data.docx 
+```
+
 Generate with style and uploaded reference files:
 
 ```bash
