@@ -60,7 +60,11 @@
               <label>
                 风格参考图（可选）
                 <input name="style_template" type="file" accept="image/*" />
+                <span class="field-hint">
+                  直接上传本地图片即可。提交时会自动转成 base64，再由后端还原为参考图参与风格分析。
+                </span>
               </label>
+              <input name="style_template_base64" type="hidden" />
             </div>
             <label>
               参考资料（可选，多文件）

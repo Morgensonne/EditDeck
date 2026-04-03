@@ -7,6 +7,8 @@ const progressPercent = document.getElementById("progress-percent");
 const progressFill = document.getElementById("progress-fill");
 const progressDetail = document.getElementById("progress-detail");
 const progressSlide = document.getElementById("progress-slide");
+const styleTemplateInput = form.querySelector('input[name="style_template"]');
+const styleTemplateBase64Input = form.querySelector('input[name="style_template_base64"]');
 
 const generateFields = document.getElementById("generate-fields");
 const replicaFields = document.getElementById("replica-fields");
@@ -140,6 +142,15 @@ function updateProgress(job) {
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve((reader.result || "").toString());
+    reader.onerror = () => reject(new Error("模板图读取失败，请重新选择文件。"));
+    reader.readAsDataURL(file);
+  });
 }
 
 function getFieldNodes(name) {
@@ -498,7 +509,10 @@ async function handlePrepare() {
   if (styleDesc) formData.set("style_description", styleDesc);
 
   const styleFile = form.querySelector('[name="style_template"]').files[0];
-  if (styleFile && styleFile.size > 0) formData.set("style_template", styleFile);
+  if (styleFile && styleFile.size > 0) {
+    const styleTemplateBase64 = await readFileAsDataUrl(styleFile);
+    formData.set("style_template_base64", styleTemplateBase64);
+  }
 
   const sourceFiles = Array.from(form.querySelector('[name="source_files"]').files || []);
   sourceFiles.forEach((file) => formData.append("source_files", file));
@@ -619,6 +633,12 @@ renderBtn.addEventListener("click", handleRenderAll);
 rerenderBtn.addEventListener("click", handleRerenderSelected);
 editableBtn.addEventListener("click", () => handleEditable(true));
 editableSelectedBtn.addEventListener("click", () => handleEditable(false));
+
+if (styleTemplateInput && styleTemplateBase64Input) {
+  styleTemplateInput.addEventListener("change", () => {
+    styleTemplateBase64Input.value = "";
+  });
+}
 
 setMode("generate");
 loadDefaults();

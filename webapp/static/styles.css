@@ -211,6 +211,15 @@ button:disabled {
   font-size: 13px;
 }
 
+.field-hint {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
 .outline-editor {
   display: grid;
   gap: 10px;
