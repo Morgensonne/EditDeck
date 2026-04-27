@@ -26,8 +26,9 @@ The first non-whitespace characters of your output must be exactly `function bui
 1. Reconstruct every visible text fragment from the source image without omission, including: title, subtitle, bullets, labels, numbers, units, legends, footnotes, captions, page markers, mathematical formulas, equations, special symbols, and punctuation, preserving the original notation and layout as closely as possible.
 2. Do not summarize, paraphrase, merge, or shorten source text content. Keep the original wording as shown in the image.
 3. Recreate every visible component and section block: backgrounds, containers, separators, lines, icons, logos, charts, tables, callouts, decorative elements, and structural modules.
-4. If some area is dense or partially unclear, still preserve it with best-effort reconstruction. Prefer explicit placeholders/components over dropping content.
-5. Never intentionally skip any visible part because of complexity, density, or small size.
+4. Pay special attention to the slide base background color system (`底色`): determine whether the background is a solid color (`纯色`) or a gradient (`渐变`), identify the dominant red/white/neutral tones, and recreate that base before placing any foreground elements.
+5. If some area is dense or partially unclear, still preserve it with best-effort reconstruction. Prefer explicit placeholders/components over dropping content.
+6. Never intentionally skip any visible part because of complexity, density, or small size.
 
 # Fidelity Rules
 1. All text must be recreated with `slide.addText()`.
@@ -36,6 +37,7 @@ The first non-whitespace characters of your output must be exactly `function bui
 4. All visible Chinese text should stay editable and remain in Simplified Chinese.
 5. Layout must closely match the uploaded slide image.
 6. Keep relative positions, grouping, and visual hierarchy faithful to the source; do not collapse multiple regions into a simplified single block.
+7. The slide background must not be left as a default white/transparent canvas unless the source image is truly plain white. For solid backgrounds, use a full-slide native shape or slide background fill with the closest observed color. For gradient backgrounds, approximate the gradient with native gradient fill when available, or with layered low-opacity full-slide shapes; preserve gradient direction, color stops, and red-white balance as closely as possible.
 
 # Placeholder Rules
 1. Every image/icon/illustration/logo area must use `addPH(...)`.

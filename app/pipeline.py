@@ -50,6 +50,11 @@ STYLE_PROMPT_GUARD = (
     "只描述视觉风格与版式语言，禁止出现任何PPT生成参数、画幅比例、分辨率、像素、随机种子、"
     "采样步数、CFG、负面提示词、输出格式或模型参数。"
 )
+STYLE_EXTRACTION_FRIENDLY_CLAUSE = (
+    "素材提取友好约束：生成图片中的 logo/标志必须清晰、边缘分明、可辨识，"
+    "避免与其他元素粘连、遮挡或融入背景；背景应优先使用纯色或简洁渐变色，"
+    "避免复杂纹理、噪点、照片化背景和大面积杂乱装饰，以便后续抠图和素材提取。"
+)
 STYLE_PROMPT_PROHIBITION_RE = re.compile(r"(禁止|不得|不要|避免|不能|勿|严禁|不包含|不出现|不可|去除)")
 STYLE_PROMPT_PARAMETER_RE = re.compile(
     r"(?i)(?:"
@@ -1347,7 +1352,20 @@ When conflict occurs, preserve readability, hierarchy, and business clarity firs
             cleaned = self._sanitize_style_prompt(fallback_text)
         if not cleaned:
             cleaned = STYLE_PROMPT_GUARD
+        cleaned = self._ensure_extraction_friendly_style_clause(cleaned)
         return cleaned
+
+    @staticmethod
+    def _ensure_extraction_friendly_style_clause(style_prompt: str) -> str:
+        cleaned = (style_prompt or "").strip()
+        if not cleaned:
+            return STYLE_EXTRACTION_FRIENDLY_CLAUSE
+        if (
+            "素材提取友好约束" in cleaned
+            or ("logo" in cleaned.lower() and "纯色" in cleaned and "渐变" in cleaned)
+        ):
+            return cleaned
+        return f"{cleaned}\n\n{STYLE_EXTRACTION_FRIENDLY_CLAUSE}"
 
     def _sanitize_style_prompt(self, raw_text: str) -> str:
         lines: list[str] = []

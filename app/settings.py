@@ -44,7 +44,7 @@ class ImageModelConfig(BaseModel):
     provider: Literal["openai", "gemini", "http"] = "http"
     base_url: str = "https://grsai.dakka.com.cn/v1/draw/completions"
     api_key: str = ""
-    model: str = "nano-banana-pro"
+    model: str = "gpt-image-2"
     size: str = "4K"
     variants: int = 1
     timeout: int = 300
