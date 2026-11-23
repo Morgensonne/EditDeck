@@ -17,6 +17,7 @@ import requests
 from pptx import Presentation
 from pptx.util import Inches
 
+from app.minimax_image import generate_h3_image
 from app.model_api import chat_completion_text
 from app.schemas import GenerateResponse, OutlineResult, SlideOutline, SlideResult
 from app.settings import Settings
@@ -241,8 +242,8 @@ class PPTImagePipeline:
         )
         if cfg.text_provider not in {"openai", "gemini"}:
             raise ValueError("Text provider must be `openai` or `gemini`.")
-        if cfg.image_provider not in {"openai", "gemini", "http"}:
-            raise ValueError("Image provider must be `openai`, `gemini`, or `http`.")
+        if cfg.image_provider not in {"openai", "gemini", "http", "minimax"}:
+            raise ValueError(f"Unsupported image provider: {cfg.image_provider}")
         if not cfg.text_base_url:
             raise ValueError("Text model base_url cannot be empty.")
         if not cfg.image_base_url:
@@ -1642,6 +1643,11 @@ Key points:
         logger: Optional[GenerationLogger] = None,
     ) -> None:
         image_provider = (runtime_cfg.image_provider or "http").strip().lower()
+        timeout = self.settings.image_timeout
+        retries = self.settings.image_retries
+        if image_provider == "minimax":
+            timeout = max(600, timeout)
+            retries = 0  # Retrying a submitted generation can bill for another image.
         augmented_prompt = self._augment_prompt(prompt)
         slide_dir = f"slides/slide_{slide_page:02d}" if slide_page else ""
         if logger and slide_page is not None:
@@ -1654,8 +1660,8 @@ Key points:
                     "model": runtime_cfg.image_model,
                     "image_size": self.settings.image_size,
                     "variants": self.settings.image_variants,
-                    "timeout_seconds": self.settings.image_timeout,
-                    "retries": self.settings.image_retries,
+                    "timeout_seconds": timeout,
+                    "retries": retries,
                     "image_prompt_path": image_prompt_path,
                 },
             )
@@ -1679,7 +1685,7 @@ Key points:
             )
             return
 
-        attempts = 1 + max(0, self.settings.image_retries)
+        attempts = 1 + max(0, retries)
         last_error: Optional[Exception] = None
         for attempt in range(1, attempts + 1):
             try:
@@ -1696,6 +1702,16 @@ Key points:
                         image_api_key=runtime_cfg.image_api_key,
                         image_model=runtime_cfg.image_model,
                         prompt=augmented_prompt,
+                    )
+                elif image_provider == "minimax":
+                    image_bytes, response_summary = generate_h3_image(
+                        endpoint=runtime_cfg.image_base_url,
+                        api_key=runtime_cfg.image_api_key,
+                        model=runtime_cfg.image_model,
+                        prompt=augmented_prompt,
+                        size=self.settings.image_size,
+                        variants=self.settings.image_variants,
+                        timeout=timeout,
                     )
                 else:
                     raise ValueError(f"Unsupported image provider: {image_provider}")

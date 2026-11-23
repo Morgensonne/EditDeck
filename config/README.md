@@ -128,15 +128,31 @@ mineru:
 
 | Field | Description | Notes |
 | --- | --- | --- |
-| `provider` | 生图提供方 | 支持 `http`、`openai`、`gemini` |
+| `provider` | Image provider | `http`, `openai`, `gemini`, or `minimax` |
 | `base_url` | 图片接口地址 | 保留当前服务地址即可 |
-| `api_key` | 生图 key | 为空时回退到 `models.text.api_key` |
+| `api_key` | Image API key | Set a dedicated image key for H3. Other image providers can fall back to `models.text.api_key`. |
 | `model` | 生图模型名 | 例如 `nano-banana-pro` |
 | `size` | 图片尺寸 | 由后端解释 |
 | `variants` | 单次生成张数 | 通常保持 `1` |
 | `timeout` | 单次请求超时 | 单位秒 |
 | `retries` | 重试次数 | 失败时使用 |
 | `max_workers` | 并发数 | 控制批量生成速度 |
+
+#### MiniMax H3 slide images
+
+Set the following fields under `models.image` in `config/app.yaml` and supply the image key through `--image-api-key` or `models.image.api_key`.
+
+```yaml
+provider: minimax
+base_url: https://api.minimax.io/v1/images/generations
+model: MiniMax-H3-Image
+size: 4K
+variants: 1
+```
+
+For a China-region key, use `https://api.minimax.cn/v1/images/generations`. Both regions also support `MiniMax-H3-Image-Highspeed`. The area presets `1K`, `2K` and `4K` request a widescreen slide. An explicit `WIDTHxHEIGHT` requests that size directly. Each slide uses the first successful image returned. Keep `variants: 1` to generate one image per slide.
+
+H3 generation waits at least 600 seconds and sends each generation request once because a timed-out request can still complete and incur a charge.
 
 ### `mineru`
 
