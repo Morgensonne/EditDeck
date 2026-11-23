@@ -41,7 +41,7 @@ class EditableModelConfig(BaseModel):
 
 
 class ImageModelConfig(BaseModel):
-    provider: Literal["openai", "gemini", "http"] = "http"
+    provider: Literal["openai", "gemini", "http", "minimax"] = "http"
     base_url: str = "https://grsai.dakka.com.cn/v1/draw/completions"
     api_key: str = ""
     model: str = "nano-banana-pro"
@@ -190,6 +190,8 @@ class Settings(BaseModel):
 
     @property
     def resolved_image_key(self) -> str:
+        if self.image_provider == "minimax":
+            return self.image_api_key
         return self.models.image.api_key or self.models.text.api_key
 
     @property
